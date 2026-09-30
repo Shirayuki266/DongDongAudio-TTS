@@ -1,0 +1,6 @@
+{
+  "name": "TikTok Baby Voice TTS Studio",
+  "description": "Studio chuyển văn bản thành giọng nói TikTok em bé không giới hạn, hỗ trợ chỉnh sửa tốc độ, tông giọng chuyên nghiệp và xuất file âm thanh chất lượng cao.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
