@@ -75,6 +75,104 @@ const VOICE_STYLE_PRESETS: Record<string, { prompt: string; defaultVoice: string
     prompt: 'Gentle soft-spoken Vietnamese female voice, soothing, intimate, relaxing bedtime and lifestyle storyteller in Vietnamese.',
     defaultVoice: 'Kore',
   },
+
+  // Dịch vụ giọng nói Bing (Hoài My, Nam Minh, Andrew, Ava, Brian, Emma, Seraphina, Florian, Vivienne, Remy)
+  bing_hoaimy: {
+    prompt: 'Warm, expressive northern Vietnamese female voice (Hoai My style), natural, articulate, soothing storytelling and podcast narrator in Vietnamese.',
+    defaultVoice: 'Kore',
+  },
+  bing_namminh: {
+    prompt: 'Deep, resonant, warm northern Vietnamese male voice (Nam Minh style), mature, calm, authoritative broadcast quality in Vietnamese.',
+    defaultVoice: 'Charon',
+  },
+  bing_andrew: {
+    prompt: 'Modern, clear, articulate male narrator (Andrew style), engaging, friendly and confident in Vietnamese.',
+    defaultVoice: 'Fenrir',
+  },
+  bing_ava: {
+    prompt: 'Natural, cheerful, bright young female narrator (Ava style), conversational and pleasant in Vietnamese.',
+    defaultVoice: 'Kore',
+  },
+  bing_brian: {
+    prompt: 'Deep, thoughtful, narrative documentary male voice (Brian style), measured, compelling storytelling in Vietnamese.',
+    defaultVoice: 'Charon',
+  },
+  bing_emma: {
+    prompt: 'Youthful, charming, upbeat female voice (Emma style), bright, engaging lifestyle vlog tone in Vietnamese.',
+    defaultVoice: 'Zephyr',
+  },
+  bing_seraphina: {
+    prompt: 'Sophisticated, elegant, poetic female voice (Seraphina style), smooth, velvety, storytelling in Vietnamese.',
+    defaultVoice: 'Kore',
+  },
+  bing_florian: {
+    prompt: 'Distinctive, scholarly, articulate male voice (Florian style), crisp, well-paced explanation in Vietnamese.',
+    defaultVoice: 'Fenrir',
+  },
+  bing_vivienne: {
+    prompt: 'Sweet, melodious, gentle female voice (Vivienne style), pleasant, charming and warm in Vietnamese.',
+    defaultVoice: 'Kore',
+  },
+  bing_remy: {
+    prompt: 'Calm, friendly, relaxed male voice (Remy style), easygoing, modern conversational tone in Vietnamese.',
+    defaultVoice: 'Puck',
+  },
+
+  // Dịch vụ giọng nói Google Cloud (Nữ 1, Nữ 2, Nữ 3, Nam 1, Nam 2, Nam 3)
+  google_nu_1: {
+    prompt: 'Google Cloud Standard Female 1, crystal clear, professional, balanced pitch, broadcast quality in Vietnamese.',
+    defaultVoice: 'Kore',
+  },
+  google_nu_2: {
+    prompt: 'Google Cloud Standard Female 2, bright, higher pitch, articulate, commercial narration in Vietnamese.',
+    defaultVoice: 'Zephyr',
+  },
+  google_nu_3: {
+    prompt: 'Google Cloud Neural2 Female 3, expressive, smooth natural cadence, warm and inviting in Vietnamese.',
+    defaultVoice: 'Kore',
+  },
+  google_nam_1: {
+    prompt: 'Google Cloud Standard Male 1, deep, authoritative, clear pronunciation, news broadcast in Vietnamese.',
+    defaultVoice: 'Charon',
+  },
+  google_nam_2: {
+    prompt: 'Google Cloud Standard Male 2, friendly, warm baritone, engaging narrator in Vietnamese.',
+    defaultVoice: 'Fenrir',
+  },
+  google_nam_3: {
+    prompt: 'Google Cloud Neural2 Male 3, natural, dynamic, conversational modern male voice in Vietnamese.',
+    defaultVoice: 'Zephyr',
+  },
+
+  // Giọng Chị Google
+  chi_google: {
+    prompt: 'Iconic legendary Vietnamese Chi Google voice, clear, rhythmic, humorous, iconic TikTok narration style in Vietnamese.',
+    defaultVoice: 'Kore',
+  },
+
+  // Giọng đọc của TikTok (Nữ 1, Nam 1, Nữ 2)
+  tiktok_nu_1: {
+    prompt: 'TikTok Female 1, viral video narrator, engaging, fast-paced, entertaining review tone in Vietnamese.',
+    defaultVoice: 'Kore',
+  },
+  tiktok_nam_1: {
+    prompt: 'TikTok Male 1, dramatic movie recap narrator, cinematic, tension-building recap voice in Vietnamese.',
+    defaultVoice: 'Charon',
+  },
+  tiktok_nu_2: {
+    prompt: 'TikTok Female 2, cute, sweet, vibrant young girl review tone, cheerful and playful in Vietnamese.',
+    defaultVoice: 'Zephyr',
+  },
+
+  // Giọng trình duyệt Web Speech API fallback
+  browser_an: {
+    prompt: 'Clear Vietnamese browser voice, standard natural reading in Vietnamese.',
+    defaultVoice: 'Kore',
+  },
+  browser_system: {
+    prompt: 'Default system assistant voice, clear, articulate in Vietnamese.',
+    defaultVoice: 'Zephyr',
+  },
 };
 
 // Quota management to prevent repeated 429 errors on free tier

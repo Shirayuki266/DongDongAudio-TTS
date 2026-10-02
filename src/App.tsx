@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { VoicePreset, AudioSettings, TtsEngine, HistoryItem } from './types/tts';
+import { VoicePreset, AudioSettings, TtsEngine, HistoryItem, SavedCustomVoice } from './types/tts';
 import { VOICE_PRESETS, DEFAULT_AUDIO_SETTINGS } from './utils/presets';
 import {
   VoicePlayer,
@@ -12,15 +12,21 @@ import { VoiceSelector } from './components/VoiceSelector';
 import { TextEditor } from './components/TextEditor';
 import { AudioWaveform } from './components/AudioWaveform';
 import { AudioControls } from './components/AudioControls';
-import { AdvancedAudioSuite } from './components/AdvancedAudioSuite';
+import { SaveVoiceModal } from './components/SaveVoiceModal';
+import { AudioReverseAnalysisModal } from './components/AudioReverseAnalysisModal';
 import { ExportModal } from './components/ExportModal';
 import { HistoryShelf } from './components/HistoryShelf';
 import { TikTokTipsModal } from './components/TikTokTipsModal';
 import { AlertCircle, Sparkles, CheckCircle2 } from 'lucide-react';
 
 const LOCAL_STORAGE_HISTORY_KEY = 'tiktok_baby_tts_history_v1';
+const LOCAL_STORAGE_SAVED_VOICES_KEY = 'tiktok_tts_saved_custom_voices_v1';
+const LOCAL_STORAGE_THEME_KEY = 'dong_dong_tts_theme_v1';
 
 export default function App() {
+  // Theme State
+  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+
   // Studio State
   const [text, setText] = useState<string>(
     'Hí lu cả nhà iu nha! Hôm nay em bé sẽ dẫn mọi người đi khám phá một điều siêu cấp đáng yêu luôn nè. Mọi người nhớ bấm tim và follow cho em bé đó nha, iu cả nhà nhiều lắm!'
@@ -30,6 +36,12 @@ export default function App() {
   const [customPrompt, setCustomPrompt] = useState<string>('');
   const [isCustomActive, setIsCustomActive] = useState<boolean>(false);
   const [audioSettings, setAudioSettings] = useState<AudioSettings>(DEFAULT_AUDIO_SETTINGS);
+
+  // Custom Saved Voices & Reverse Analysis State
+  const [savedVoices, setSavedVoices] = useState<SavedCustomVoice[]>([]);
+  const [activeSavedVoiceId, setActiveSavedVoiceId] = useState<string | null>(null);
+  const [isSaveVoiceModalOpen, setIsSaveVoiceModalOpen] = useState<boolean>(false);
+  const [isReverseAnalysisModalOpen, setIsReverseAnalysisModalOpen] = useState<boolean>(false);
 
   // Audio Playback State
   const [audioBuffer, setAudioBuffer] = useState<AudioBuffer | null>(null);
@@ -74,13 +86,24 @@ export default function App() {
       }
     });
 
-    // Load history from localStorage
+    // Load history, saved custom voices, and theme from localStorage
     try {
       const saved = localStorage.getItem(LOCAL_STORAGE_HISTORY_KEY);
       if (saved) {
-        const parsed = JSON.parse(saved);
-        // Note: Blobs aren't stored in localStorage, audioUrls reconstructed if needed
-        setHistory(parsed);
+        setHistory(JSON.parse(saved));
+      }
+      const savedCustom = localStorage.getItem(LOCAL_STORAGE_SAVED_VOICES_KEY);
+      if (savedCustom) {
+        setSavedVoices(JSON.parse(savedCustom));
+      }
+      const savedTheme = (localStorage.getItem(LOCAL_STORAGE_THEME_KEY) as 'dark' | 'light') || 'dark';
+      setTheme(savedTheme);
+      if (savedTheme === 'light') {
+        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.add('light');
+      } else {
+        document.documentElement.classList.remove('light');
+        document.documentElement.classList.add('dark');
       }
     } catch (e) {
       // Ignored
@@ -91,15 +114,102 @@ export default function App() {
     };
   }, [isLoop, audioSettings]);
 
-  // When preset changes, automatically calibrate the ideal baby pitch and speed
+  // Toggle Theme Handler
+  const handleToggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    localStorage.setItem(LOCAL_STORAGE_THEME_KEY, nextTheme);
+    if (nextTheme === 'light') {
+      document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
+    } else {
+      document.documentElement.classList.remove('light');
+      document.documentElement.classList.add('dark');
+    }
+  };
+
+  // When preset changes, automatically calibrate the ideal pitch and speed
   const handleSelectPreset = (preset: VoicePreset) => {
     setSelectedPreset(preset);
+    setActiveSavedVoiceId(null);
     setAudioSettings((prev) => ({
       ...prev,
       pitch: preset.defaultPitch,
       speed: preset.defaultSpeed,
       formantBoost: preset.defaultFormant,
     }));
+  };
+
+  // Custom Saved Voices Handlers
+  const handleSaveCustomVoice = (newVoice: SavedCustomVoice) => {
+    const updated = [newVoice, ...savedVoices];
+    setSavedVoices(updated);
+    setActiveSavedVoiceId(newVoice.id);
+    localStorage.setItem(LOCAL_STORAGE_SAVED_VOICES_KEY, JSON.stringify(updated));
+    setSuccessNotice(`Đã lưu loại giọng "${newVoice.name}" thành công! Xem lại tại tab "⭐ Giọng đã lưu".`);
+  };
+
+  const handleDeleteSavedVoice = (id: string) => {
+    const updated = savedVoices.filter((v) => v.id !== id);
+    setSavedVoices(updated);
+    if (activeSavedVoiceId === id) {
+      setActiveSavedVoiceId(null);
+    }
+    localStorage.setItem(LOCAL_STORAGE_SAVED_VOICES_KEY, JSON.stringify(updated));
+  };
+
+  const handleSelectSavedVoice = (voice: SavedCustomVoice) => {
+    const basePreset = VOICE_PRESETS.find((p) => p.id === voice.basePresetId) || VOICE_PRESETS[0];
+    setSelectedPreset(basePreset);
+    setActiveSavedVoiceId(voice.id);
+
+    const newSettings: AudioSettings = {
+      ...audioSettings,
+      pitch: voice.pitch,
+      speed: voice.speed,
+      formantBoost: voice.formantBoost,
+      bassCut: voice.bassCut,
+      trebleCrisp: voice.trebleCrisp,
+      volume: voice.volume,
+    };
+    setAudioSettings(newSettings);
+
+    if (voice.customPrompt) {
+      setCustomPrompt(voice.customPrompt);
+      setIsCustomActive(true);
+    }
+
+    if (audioBuffer && playerRef.current) {
+      const newDur = playerRef.current.getDuration(newSettings);
+      setDuration(newDur);
+      if (isPlaying) {
+        const curr = playerRef.current.getCurrentTime();
+        playerRef.current.play(newSettings, curr);
+      }
+    }
+
+    setSuccessNotice(`Đã áp dụng cấu hình giọng: "${voice.name}"`);
+  };
+
+  const handleApplyReverseVoice = (preset: VoicePreset, newPartialSettings: Partial<AudioSettings>) => {
+    setSelectedPreset(preset);
+    setActiveSavedVoiceId(null);
+    const updated: AudioSettings = {
+      ...audioSettings,
+      ...newPartialSettings,
+    };
+    setAudioSettings(updated);
+
+    if (audioBuffer && playerRef.current) {
+      const newDur = playerRef.current.getDuration(updated);
+      setDuration(newDur);
+      if (isPlaying) {
+        const curr = playerRef.current.getCurrentTime();
+        playerRef.current.play(updated, curr);
+      }
+    }
+
+    setSuccessNotice(`Đã phân tích và trích xuất đặc tính giọng vào studio!`);
   };
 
   // When audio settings change, recompute effective duration and update player
@@ -385,7 +495,7 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans">
+    <div className="min-h-screen app-container flex flex-col font-sans transition-colors duration-200">
       {/* Global Header */}
       <Header
         onOpenTips={() => setIsTipsModalOpen(true)}
@@ -393,6 +503,8 @@ export default function App() {
           historyShelfRef.current?.scrollIntoView({ behavior: 'smooth' });
         }}
         historyCount={history.length}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
 
       {/* Main Studio Area */}
@@ -428,7 +540,7 @@ export default function App() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
           {/* Left Column: Voice Selection & Text Input (7 Cols) */}
           <div className="lg:col-span-7 space-y-6">
-            <div className="rounded-3xl bg-slate-900/90 border border-slate-800 p-5 sm:p-6 shadow-xl space-y-6">
+            <div className="rounded-3xl studio-card border p-5 sm:p-6 shadow-xl space-y-6">
               {/* Step 1: Voice Selector */}
               <VoiceSelector
                 selectedPreset={selectedPreset}
@@ -439,10 +551,16 @@ export default function App() {
                 onChangeCustomPrompt={setCustomPrompt}
                 isCustomActive={isCustomActive}
                 onToggleCustom={setIsCustomActive}
+                savedVoices={savedVoices}
+                activeSavedVoiceId={activeSavedVoiceId}
+                onSelectSavedVoice={handleSelectSavedVoice}
+                onDeleteSavedVoice={handleDeleteSavedVoice}
+                onOpenSaveModal={() => setIsSaveVoiceModalOpen(true)}
+                onOpenReverseAnalysis={() => setIsReverseAnalysisModalOpen(true)}
               />
 
               {/* Step 2: Text Editor & Scripting */}
-              <div className="pt-2 border-t border-slate-800/80">
+              <div className="pt-2 border-t border-slate-200 dark:border-slate-800/80">
                 <TextEditor
                   text={text}
                   onChangeText={setText}
@@ -481,6 +599,7 @@ export default function App() {
               settings={audioSettings}
               onChangeSettings={handleChangeSettings}
               onReset={handleResetSettings}
+              onOpenSaveVoice={() => setIsSaveVoiceModalOpen(true)}
               onApplySettings={() => {
                 if (audioBuffer && playerRef.current) {
                   playerRef.current.play(audioSettings, 0);
@@ -489,20 +608,6 @@ export default function App() {
               }}
             />
           </div>
-        </div>
-
-        {/* Advanced Audio Suite: Equalizer, Studio Reverb, BGM Ducking & Normalization */}
-        <div className="pt-2">
-          <AdvancedAudioSuite
-            settings={audioSettings}
-            onChangeSettings={handleChangeSettings}
-            onApplyChanges={() => {
-              if (audioBuffer && playerRef.current) {
-                playerRef.current.play(audioSettings, 0);
-                setIsPlaying(true);
-              }
-            }}
-          />
         </div>
 
         {/* Bottom Section: History Shelf */}
@@ -521,7 +626,7 @@ export default function App() {
       {/* Footer */}
       <footer className="mt-auto border-t border-slate-800/80 bg-slate-950 py-6 px-4 text-center text-xs text-slate-500">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p>© 2026 TikTok Baby Voice TTS Studio • Chuyển văn bản thành giọng em bé không giới hạn.</p>
+          <p>© 2026 Đồng Đồng TTS Studio • Chuyển văn bản thành giọng nói AI không giới hạn.</p>
           <div className="flex items-center gap-4 text-slate-400">
             <span>Độ phân giải: 24kHz / 48kHz WAV</span>
             <span>•</span>
@@ -534,6 +639,24 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Save Custom Voice Modal */}
+      <SaveVoiceModal
+        isOpen={isSaveVoiceModalOpen}
+        onClose={() => setIsSaveVoiceModalOpen(false)}
+        selectedPreset={selectedPreset}
+        settings={audioSettings}
+        customPrompt={isCustomActive ? customPrompt : undefined}
+        onSaveVoice={handleSaveCustomVoice}
+      />
+
+      {/* Audio Reverse Voice Analysis & Cloning Modal */}
+      <AudioReverseAnalysisModal
+        isOpen={isReverseAnalysisModalOpen}
+        onClose={() => setIsReverseAnalysisModalOpen(false)}
+        onApplyVoice={handleApplyReverseVoice}
+        onSaveAsCustomVoice={handleSaveCustomVoice}
+      />
 
       {/* Export Modal */}
       <ExportModal

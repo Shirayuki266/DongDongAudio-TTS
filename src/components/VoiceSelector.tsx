@@ -1,7 +1,18 @@
 import React, { useState } from 'react';
 import { VOICE_PRESETS } from '../utils/presets';
-import { VoicePreset, TtsEngine } from '../types/tts';
-import { Sparkles, Radio, Zap, Settings2, UserCheck, Flame } from 'lucide-react';
+import { VoicePreset, VoiceCategory, TtsEngine, SavedCustomVoice } from '../types/tts';
+import {
+  Sparkles,
+  Radio,
+  Zap,
+  Settings2,
+  Check,
+  Star,
+  Trash2,
+  BookmarkPlus,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
 
 interface VoiceSelectorProps {
   selectedPreset: VoicePreset;
@@ -12,9 +23,24 @@ interface VoiceSelectorProps {
   onChangeCustomPrompt: (prompt: string) => void;
   isCustomActive: boolean;
   onToggleCustom: (active: boolean) => void;
+  savedVoices: SavedCustomVoice[];
+  activeSavedVoiceId: string | null;
+  onSelectSavedVoice: (voice: SavedCustomVoice) => void;
+  onDeleteSavedVoice: (id: string) => void;
+  onOpenSaveModal: () => void;
+  onOpenReverseAnalysis: () => void;
 }
 
-type CategoryFilter = 'all' | 'female' | 'baby' | 'fun';
+const PROVIDER_SECTIONS: {
+  key: VoiceCategory;
+  title: string;
+}[] = [
+  { key: 'tiktok', title: 'Giọng TikTok & Em Bé' },
+  { key: 'bing', title: 'Dịch vụ Bing' },
+  { key: 'google_cloud', title: 'Google Cloud' },
+  { key: 'chi_google', title: 'Giọng Chị Google' },
+  { key: 'browser', title: 'Giọng Trình Duyệt' },
+];
 
 export const VoiceSelector: React.FC<VoiceSelectorProps> = ({
   selectedPreset,
@@ -25,175 +51,286 @@ export const VoiceSelector: React.FC<VoiceSelectorProps> = ({
   onChangeCustomPrompt,
   isCustomActive,
   onToggleCustom,
+  savedVoices,
+  activeSavedVoiceId,
+  onSelectSavedVoice,
+  onDeleteSavedVoice,
+  onOpenSaveModal,
+  onOpenReverseAnalysis,
 }) => {
-  const [filter, setFilter] = useState<CategoryFilter>('all');
+  const [activeCategory, setActiveCategory] = useState<VoiceCategory>('all');
+  const [isPromptExpanded, setIsPromptExpanded] = useState(false);
 
-  const filteredPresets = VOICE_PRESETS.filter((p) => {
-    if (filter === 'all') return true;
-    if (filter === 'female') return p.category === 'female';
-    if (filter === 'baby') return p.category === 'baby';
-    if (filter === 'fun') return p.category === 'fun';
-    return true;
-  });
+  const visibleSections =
+    activeCategory === 'all'
+      ? PROVIDER_SECTIONS
+      : PROVIDER_SECTIONS.filter((s) => s.key === activeCategory);
 
   return (
-    <div className="space-y-4">
-      {/* Header & Engine Toggle */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+    <div className="space-y-3">
+      {/* Header & Engine Toggle (Compact) */}
+      <div className="flex items-center justify-between gap-2 pb-1.5 border-b border-slate-200 dark:border-slate-800/80">
         <div className="flex items-center gap-2">
-          <Sparkles className="w-4 h-4 text-pink-400" />
-          <h2 className="text-sm font-bold text-slate-200 uppercase tracking-wider">
-            1. Chọn Giọng Đọc TikTok (Em Bé & Giọng Nữ)
+          <Sparkles className="w-4 h-4 text-pink-500 dark:text-pink-400 flex-shrink-0" />
+          <h2 className="text-xs sm:text-sm font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider">
+            1. Chọn Giọng Đọc
           </h2>
         </div>
 
-        {/* Engine switcher */}
-        <div className="flex items-center gap-1.5 p-1 rounded-xl bg-slate-900 border border-slate-800 text-xs self-start sm:self-auto">
+        {/* Engine switcher & Reverse Clone button */}
+        <div className="flex items-center gap-1.5">
           <button
-            onClick={() => onChangeEngine('gemini')}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-medium transition-all ${
-              selectedEngine === 'gemini'
-                ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-            title="Sử dụng Gemini 3.8 Flash Lite TTS cho chất giọng chuẩn studio, chân thực nhất"
+            onClick={onOpenReverseAnalysis}
+            className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 dark:bg-gradient-to-r dark:from-purple-900/60 dark:to-pink-900/60 dark:hover:from-purple-800/80 dark:hover:to-pink-800/80 dark:text-purple-200 dark:hover:text-white dark:border-purple-500/40 text-xs font-semibold transition-all active:scale-95 shadow-sm"
+            title="Tải file âm thanh để AI phân tích ngược và trích xuất giọng tương tự"
           >
-            <Zap className="w-3 h-3 text-yellow-300" />
-            <span>Gemini AI Studio</span>
+            <Radio className="w-3 h-3 text-pink-500 dark:text-pink-400 animate-pulse" />
+            <span className="hidden xs:inline">Phân tích Audio</span>
+            <span className="xs:hidden">Clone</span>
           </button>
 
-          <button
-            onClick={() => onChangeEngine('google-fast')}
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-lg font-medium transition-all ${
-              selectedEngine === 'google-fast'
-                ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
-            title="Google Fast TTS không giới hạn, tạo âm thanh siêu tốc"
-          >
-            <Radio className="w-3 h-3 text-cyan-300" />
-            <span>Fast HD</span>
-          </button>
+          <div className="flex items-center gap-1 p-0.5 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-[11px]">
+            <button
+              onClick={() => onChangeEngine('gemini')}
+              className={`px-2 py-0.5 rounded-md font-medium transition-all ${
+                selectedEngine === 'gemini'
+                  ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-sm font-bold'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+              }`}
+            >
+              Gemini
+            </button>
+            <button
+              onClick={() => onChangeEngine('google-fast')}
+              className={`px-2 py-0.5 rounded-md font-medium transition-all ${
+                selectedEngine === 'google-fast'
+                  ? 'bg-gradient-to-r from-cyan-600 to-blue-600 text-white shadow-sm font-bold'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+              }`}
+            >
+              Fast HD
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Category Filter Tabs */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs no-scrollbar">
+      {/* Category Tabs (Compact) */}
+      <div className="flex items-center gap-1 overflow-x-auto pb-1 text-xs no-scrollbar">
         {[
-          { key: 'all', label: 'Tất Cả', icon: '🌟' },
-          { key: 'female', label: 'Giọng Nữ TikTok', icon: '👩‍🦰', hot: true },
-          { key: 'baby', label: 'Giọng Em Bé', icon: '👶' },
-          { key: 'fun', label: 'Hài Hước & Chibi', icon: '🐿️' },
+          { key: 'all', label: 'Tất cả' },
+          {
+            key: 'saved',
+            label: `Đã lưu (${savedVoices.length})`,
+            icon: '⭐',
+            highlight: savedVoices.length > 0,
+          },
+          { key: 'tiktok', label: 'TikTok & Bé' },
+          { key: 'bing', label: 'Bing' },
+          { key: 'google_cloud', label: 'Google Cloud' },
+          { key: 'chi_google', label: 'Chị Google' },
+          { key: 'browser', label: 'Trình duyệt' },
         ].map((tab) => (
           <button
             key={tab.key}
-            onClick={() => setFilter(tab.key as CategoryFilter)}
-            className={`flex-shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold transition-all border ${
-              filter === tab.key
-                ? 'bg-gradient-to-r from-pink-500/20 to-purple-500/20 text-pink-300 border-pink-500/50 shadow-sm'
-                : 'bg-slate-950/60 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-800'
+            onClick={() => setActiveCategory(tab.key as VoiceCategory)}
+            className={`flex-shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg font-medium text-[11px] sm:text-xs transition-all border ${
+              activeCategory === tab.key
+                ? 'bg-slate-200 text-slate-950 border-slate-300 font-bold shadow-sm'
+                : tab.highlight
+                ? 'bg-amber-500/10 text-amber-300 border-amber-500/30 hover:bg-amber-500/20'
+                : 'bg-slate-900/80 hover:bg-slate-800 text-slate-400 hover:text-slate-200 border-slate-800'
             }`}
           >
-            <span>{tab.icon}</span>
+            {tab.icon && <span>{tab.icon}</span>}
             <span>{tab.label}</span>
-            {tab.hot && (
-              <span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse"></span>
-            )}
           </button>
         ))}
       </div>
 
-      {/* Preset cards grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 max-h-[380px] overflow-y-auto pr-1">
-        {filteredPresets.map((preset) => {
-          const isSelected = !isCustomActive && selectedPreset.id === preset.id;
-          return (
-            <button
-              key={preset.id}
-              onClick={() => {
-                onToggleCustom(false);
-                onSelectPreset(preset);
-              }}
-              className={`group relative p-3 rounded-xl text-left transition-all duration-200 border flex flex-col justify-between ${
-                isSelected
-                  ? 'bg-gradient-to-b from-pink-950/60 to-slate-900 border-pink-500/80 shadow-lg shadow-pink-500/10 ring-1 ring-pink-500/50'
-                  : 'bg-slate-900/60 hover:bg-slate-900 border-slate-800 hover:border-slate-700'
-              }`}
-            >
-              {isSelected && (
-                <div className="absolute top-2 right-2 flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-pink-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-pink-500"></span>
-                </div>
-              )}
+      {/* COMPACT VOICE LIST CONTAINER */}
+      <div className="max-h-[160px] sm:max-h-[175px] overflow-y-auto pr-1 space-y-2.5 rounded-xl border voice-selector-box p-2.5">
+        {/* SAVED CUSTOM VOICES SECTION */}
+        {(activeCategory === 'saved' || (activeCategory === 'all' && savedVoices.length > 0)) && (
+          <div className="space-y-1.5 pb-1">
+            <div className="flex items-center justify-between text-[11px] font-bold text-amber-500 dark:text-amber-300 px-1">
+              <span className="flex items-center gap-1">
+                <Star className="w-3 h-3 fill-amber-400 text-amber-500" />
+                Giọng đã lưu ({savedVoices.length})
+              </span>
+              <button
+                onClick={onOpenSaveModal}
+                className="text-[10px] text-pink-600 dark:text-pink-400 hover:text-pink-500 font-semibold"
+              >
+                + Lưu hiện tại
+              </button>
+            </div>
 
-              <div>
-                <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
-                  <span className="text-xl transform group-hover:scale-110 transition-transform">
-                    {preset.icon}
-                  </span>
-                  <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded border ${
-                    preset.category === 'female'
-                      ? 'bg-purple-950/80 text-purple-300 border-purple-500/30'
-                      : 'bg-slate-800 text-pink-300 border-pink-500/20'
-                  }`}>
-                    {preset.tag}
-                  </span>
-                </div>
-                <h3 className="text-xs sm:text-sm font-bold text-slate-100 group-hover:text-white leading-tight">
-                  {preset.name}
-                </h3>
-                <p className="text-[11px] text-slate-400 mt-1 line-clamp-2 leading-relaxed">
-                  {preset.shortDesc}
-                </p>
+            {savedVoices.length === 0 ? (
+              <p className="text-[11px] text-slate-500 italic px-1">
+                Chưa có giọng tùy chỉnh nào được lưu.
+              </p>
+            ) : (
+              <div className="flex flex-wrap gap-1.5">
+                {savedVoices.map((voice) => {
+                  const isSelected = activeSavedVoiceId === voice.id;
+                  return (
+                    <div
+                      key={voice.id}
+                      onClick={() => onSelectSavedVoice(voice)}
+                      className={`cursor-pointer inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs transition-all border ${
+                        isSelected
+                          ? 'bg-amber-100 dark:bg-amber-950/70 border-amber-400 text-amber-950 dark:text-white font-bold ring-1 ring-amber-400/50 shadow-sm'
+                          : 'voice-chip-btn'
+                      }`}
+                    >
+                      <span>{voice.basePresetIcon}</span>
+                      <span className="truncate max-w-[120px]">{voice.name}</span>
+                      <span className="text-[10px] text-pink-600 dark:text-pink-400 font-mono">
+                        {voice.pitch >= 0 ? `+${voice.pitch}` : voice.pitch}st
+                      </span>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (confirm(`Xóa giọng "${voice.name}"?`)) {
+                            onDeleteSavedVoice(voice.id);
+                          }
+                        }}
+                        className="text-slate-400 hover:text-rose-500 p-0.5 rounded"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+                  );
+                })}
               </div>
+            )}
+          </div>
+        )}
 
-              <div className="mt-2.5 pt-2 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-500">
-                <span className="font-mono text-cyan-400/90">
-                  {preset.defaultPitch >= 0 ? `+${preset.defaultPitch}` : preset.defaultPitch}st
-                </span>
-                <span className="font-mono text-slate-400">{preset.defaultSpeed}x</span>
+        {/* PROVIDER SECTIONS (COMPACT ROWS) */}
+        {activeCategory !== 'saved' &&
+          visibleSections.map((section) => {
+            const sectionPresets = VOICE_PRESETS.filter((p) => p.category === section.key);
+            if (sectionPresets.length === 0) return null;
+
+            return (
+              <div key={section.key} className="space-y-1">
+                {activeCategory === 'all' && (
+                  <div className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider px-1">
+                    {section.title} ({sectionPresets.length})
+                  </div>
+                )}
+                <div className="flex flex-wrap gap-1.5">
+                  {sectionPresets.map((preset) => {
+                    const isSelected =
+                      !isCustomActive && !activeSavedVoiceId && selectedPreset.id === preset.id;
+                    return (
+                      <button
+                        key={preset.id}
+                        onClick={() => {
+                          onToggleCustom(false);
+                          onSelectPreset(preset);
+                        }}
+                        className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs transition-all border ${
+                          isSelected
+                            ? 'bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-950 font-bold border-slate-900 dark:border-slate-100 shadow-md ring-2 ring-pink-500/40'
+                            : 'voice-chip-btn'
+                        }`}
+                        title={`${preset.name}: ${preset.shortDesc}`}
+                      >
+                        <span className="text-xs">{preset.icon}</span>
+                        <span>{preset.name}</span>
+                        {isSelected && (
+                          <Check className="w-3 h-3 text-pink-400 dark:text-pink-600 stroke-[3]" />
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
-            </button>
-          );
-        })}
+            );
+          })}
       </div>
 
-      {/* Custom Voice Prompt Toggle & Input */}
-      <div className="p-3 rounded-xl bg-slate-900/70 border border-slate-800">
-        <div className="flex items-center justify-between mb-2">
-          <button
-            type="button"
-            onClick={() => onToggleCustom(!isCustomActive)}
-            className="flex items-center gap-2 text-xs font-semibold text-slate-300 hover:text-white transition-colors"
-          >
-            <Settings2 className="w-3.5 h-3.5 text-cyan-400" />
-            <span>Tùy biến phong cách giọng AI (Voice Prompting)</span>
-            <span
-              className={`px-1.5 py-0.5 rounded text-[10px] uppercase font-bold ${
-                isCustomActive
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40'
-                  : 'bg-slate-800 text-slate-400'
-              }`}
-            >
-              {isCustomActive ? 'Đang Bật' : 'Tùy chọn'}
-            </span>
-          </button>
+      {/* SELECTED VOICE COMPACT STATUS BAR */}
+      <div className="p-2.5 rounded-xl voice-status-bar border flex items-center justify-between text-xs gap-2">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-xl flex-shrink-0">{selectedPreset.icon}</span>
+          <div className="min-w-0">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="font-bold text-slate-900 dark:text-slate-100 text-xs truncate">
+                {selectedPreset.name}
+              </span>
+              <span className="text-[10px] px-1.5 py-0.2 rounded bg-pink-100 dark:bg-pink-500/20 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-500/30">
+                {selectedPreset.tag}
+              </span>
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 font-mono hidden sm:inline">
+                {selectedPreset.provider}
+              </span>
+            </div>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 truncate">
+              {selectedPreset.shortDesc}
+            </p>
+          </div>
         </div>
 
-        {isCustomActive && (
-          <div className="mt-2 space-y-2">
+        <div className="flex items-center gap-1.5 flex-shrink-0">
+          <button
+            onClick={onOpenSaveModal}
+            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-pink-100 hover:bg-pink-200 dark:bg-pink-600/20 dark:hover:bg-pink-600/30 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-500/40 text-[11px] font-semibold transition-all active:scale-95"
+            title="Lưu lại cấu hình giọng hiện tại"
+          >
+            <BookmarkPlus className="w-3 h-3 text-pink-500 dark:text-pink-400" />
+            <span className="hidden sm:inline">Lưu Giọng</span>
+          </button>
+        </div>
+      </div>
+
+      {/* MINIMALIST AI PROMPTING COLLAPSIBLE */}
+      <div className="rounded-xl voice-prompt-box border overflow-hidden">
+        <button
+          type="button"
+          onClick={() => setIsPromptExpanded(!isPromptExpanded)}
+          className="w-full px-3 py-1.5 flex items-center justify-between text-[11px] font-semibold text-slate-400 hover:text-slate-200 transition-colors"
+        >
+          <div className="flex items-center gap-1.5">
+            <Settings2 className="w-3 h-3 text-cyan-400" />
+            <span>Tùy biến phong cách AI Prompt (Tùy chọn)</span>
+            {isCustomActive && (
+              <span className="px-1.5 py-0.2 rounded text-[9px] bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 font-bold uppercase">
+                Bật
+              </span>
+            )}
+          </div>
+          {isPromptExpanded ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+        </button>
+
+        {isPromptExpanded && (
+          <div className="p-2.5 pt-0 space-y-1.5 border-t border-slate-800/60">
+            <div className="flex items-center justify-between pt-1">
+              <span className="text-[10px] text-slate-500">
+                Mô tả chi tiết cảm xúc và biểu cảm cho Gemini AI
+              </span>
+              <button
+                type="button"
+                onClick={() => onToggleCustom(!isCustomActive)}
+                className={`text-[10px] font-bold px-2 py-0.5 rounded ${
+                  isCustomActive ? 'bg-cyan-600 text-white' : 'bg-slate-800 text-slate-400'
+                }`}
+              >
+                {isCustomActive ? 'Đang kích hoạt' : 'Bật tính năng'}
+              </button>
+            </div>
             <textarea
               rows={2}
               value={customPrompt}
-              onChange={(e) => onChangeCustomPrompt(e.target.value)}
-              placeholder="Ví dụ: Giọng bạn nữ miền Bắc ngọt ngào, ấm áp, nhịp điệu nhanh dí dỏm chuẩn TikTok review mỹ phẩm..."
-              className="w-full px-3 py-2 text-xs rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 font-sans"
+              onChange={(e) => {
+                onChangeCustomPrompt(e.target.value);
+                if (!isCustomActive && e.target.value) onToggleCustom(true);
+              }}
+              placeholder="Ví dụ: Giọng bé gái 4 tuổi ngọt ngào, nói chậm rãi, nũng nịu..."
+              className="w-full px-2.5 py-1.5 text-xs rounded-lg bg-slate-950 border border-slate-700 text-slate-200 placeholder-slate-500 focus:outline-none focus:border-cyan-500"
             />
-            <div className="flex items-center gap-1.5 text-[11px] text-slate-400">
-              <span className="text-cyan-400">💡 Gợi ý:</span>
-              <span>Gemini 3.8 TTS sẽ tự động điều chỉnh biểu cảm và ngữ điệu theo mô tả của bạn.</span>
-            </div>
           </div>
         )}
       </div>

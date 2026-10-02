@@ -1,9 +1,28 @@
+export type VoiceCategory = 'all' | 'saved' | 'bing' | 'google_cloud' | 'chi_google' | 'tiktok' | 'browser';
+
+export interface SavedCustomVoice {
+  id: string;
+  name: string;
+  basePresetId: string;
+  basePresetName: string;
+  basePresetIcon: string;
+  pitch: number;
+  speed: number;
+  formantBoost: number;
+  bassCut: number;
+  trebleCrisp: number;
+  volume: number;
+  customPrompt?: string;
+  createdAt: number;
+}
+
 export interface VoicePreset {
   id: string;
   name: string;
   shortDesc: string;
   gender: 'female' | 'male' | 'child';
-  category?: 'baby' | 'female' | 'fun';
+  category: VoiceCategory;
+  provider: string; // 'Bing' | 'Google Cloud' | 'Chị Google' | 'TikTok' | 'Trình duyệt'
   icon: string;
   tag: string;
   geminiVoice: 'Puck' | 'Kore' | 'Zephyr' | 'Fenrir' | 'Charon';
@@ -11,6 +30,7 @@ export interface VoicePreset {
   defaultSpeed: number; // 0.5 to 2.5
   defaultFormant: number; // 0 to 10
   stylePrompt: string;
+  isBrowserVoice?: boolean;
 }
 
 export interface EqualizerBands {

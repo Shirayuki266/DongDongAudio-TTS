@@ -11,6 +11,7 @@ import {
   Volume2,
   ChevronDown,
   ChevronUp,
+  BookmarkPlus,
 } from 'lucide-react';
 
 interface AudioControlsProps {
@@ -18,6 +19,7 @@ interface AudioControlsProps {
   onChangeSettings: (newSettings: AudioSettings) => void;
   onReset: () => void;
   onApplySettings: () => void;
+  onOpenSaveVoice?: () => void;
 }
 
 export const AudioControls: React.FC<AudioControlsProps> = ({
@@ -25,6 +27,7 @@ export const AudioControls: React.FC<AudioControlsProps> = ({
   onChangeSettings,
   onReset,
   onApplySettings,
+  onOpenSaveVoice,
 }) => {
   const [showAdvanced, setShowAdvanced] = useState(false);
 
@@ -54,34 +57,52 @@ export const AudioControls: React.FC<AudioControlsProps> = ({
 
   return (
     <div className="rounded-2xl bg-slate-900 border border-slate-800 p-4 sm:p-5 space-y-5 shadow-xl">
-      {/* Header and Reset */}
+      {/* Header and Actions */}
       <div className="flex items-center justify-between pb-2 border-b border-slate-800/80">
         <div className="flex items-center gap-2">
           <Sliders className="w-4 h-4 text-pink-400" />
           <h3 className="text-sm font-bold text-slate-100 uppercase tracking-wider">
-            3. Bộ Chỉnh Sửa Tông Giọng & Tốc Độ Chuyên Nghiệp
+            3. Bộ Chỉnh Sửa Tông Giọng & Tốc Độ
           </h3>
         </div>
 
-        <button
-          onClick={onReset}
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition-all active:scale-95"
-          title="Đặt lại các thông số âm thanh về mặc định"
-        >
-          <RotateCcw className="w-3.5 h-3.5" />
-          <span>Đặt lại chuẩn</span>
-        </button>
+        <div className="flex items-center gap-1.5">
+          {onOpenSaveVoice && (
+            <button
+              onClick={onOpenSaveVoice}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-pink-600/20 hover:bg-pink-600/30 text-pink-300 hover:text-white border border-pink-500/30 text-xs font-semibold transition-all active:scale-95 shadow-sm"
+              title="Lưu lại các thông số tông giọng, tốc độ & bộ lọc đã chỉnh thành loại giọng riêng"
+            >
+              <BookmarkPlus className="w-3.5 h-3.5 text-pink-400" />
+              <span>Lưu Giọng Này</span>
+            </button>
+          )}
+
+          <button
+            onClick={onReset}
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-xs font-semibold transition-all active:scale-95"
+            title="Đặt lại các thông số âm thanh về mặc định"
+          >
+            <RotateCcw className="w-3.5 h-3.5" />
+            <span>Đặt lại chuẩn</span>
+          </button>
+        </div>
       </div>
 
-      {/* CORE 1: TÔNG GIỌNG (PITCH SHIFT) */}
+      {/* CORE 1: TÔNG GIỌNG / ĐỘ CAO GIỌNG (PITCH SHIFT) */}
       <div className="space-y-2.5 p-3.5 rounded-xl bg-slate-950/60 border border-slate-800/80">
         <div className="flex items-center justify-between">
-          <label className="flex items-center gap-2 text-xs font-bold text-slate-200">
-            <Music className="w-4 h-4 text-pink-400" />
-            <span>Tông giọng (Pitch Shift)</span>
-          </label>
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] text-pink-400 font-medium">
+          <div>
+            <label className="flex items-center gap-2 text-xs font-bold text-slate-200">
+              <Music className="w-4 h-4 text-pink-400" />
+              <span>Tông giọng / Độ cao giọng (Pitch / Key)</span>
+            </label>
+            <p className="text-[10px] text-slate-500 mt-0.5">
+              (Tông giọng & Độ cao giọng là một: chỉnh cao bổng hoặc trầm ấm theo bán cung Semitones)
+            </p>
+          </div>
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <span className="text-[11px] text-pink-400 font-medium hidden sm:inline">
               {getPitchLabel(settings.pitch)}
             </span>
             <span className="font-mono text-xs px-2 py-0.5 rounded bg-pink-500/20 text-pink-300 border border-pink-500/30 font-bold">

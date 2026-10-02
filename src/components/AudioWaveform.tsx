@@ -104,8 +104,9 @@ export const AudioWaveform: React.FC<AudioWaveformProps> = ({
         ctx.shadowColor = 'rgba(236, 72, 153, 0.4)';
         ctx.shadowBlur = isPlaying ? 6 : 2;
       } else {
-        // Unplayed portion
-        ctx.fillStyle = 'rgba(71, 85, 105, 0.4)'; // slate-600 with opacity
+        // Unplayed portion: lighter contrast in light mode
+        const isDark = document.documentElement.classList.contains('dark');
+        ctx.fillStyle = isDark ? 'rgba(71, 85, 105, 0.4)' : 'rgba(148, 163, 184, 0.55)';
         ctx.shadowColor = 'transparent';
         ctx.shadowBlur = 0;
       }
@@ -143,7 +144,7 @@ export const AudioWaveform: React.FC<AudioWaveformProps> = ({
   };
 
   return (
-    <div className="rounded-2xl bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 p-4 sm:p-5 shadow-2xl relative overflow-hidden">
+    <div className="rounded-2xl waveform-card border p-4 sm:p-5 shadow-xl relative overflow-hidden">
       {/* Background ambient glow */}
       <div className="absolute top-0 right-0 w-64 h-64 bg-pink-500/5 rounded-full blur-3xl pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-500/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -152,20 +153,20 @@ export const AudioWaveform: React.FC<AudioWaveformProps> = ({
         {/* Top bar: title and export button */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="p-1.5 rounded-lg bg-pink-500/10 text-pink-400 border border-pink-500/20">
+            <div className="p-1.5 rounded-lg bg-pink-500/10 text-pink-500 dark:text-pink-400 border border-pink-500/20">
               <Sparkles className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+              <h3 className="text-sm font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2">
                 Trình Phát Sóng Âm Trực Quan
                 {isPlaying && (
-                  <span className="flex items-center gap-1 text-[10px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded-full border border-cyan-800/50">
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+                  <span className="flex items-center gap-1 text-[10px] font-mono text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-950/60 px-2 py-0.5 rounded-full border border-cyan-200 dark:border-cyan-800/50">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-ping"></span>
                     LIVE DSP
                   </span>
                 )}
               </h3>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-slate-500 dark:text-slate-400">
                 Sóng âm biến đổi theo thời gian thực theo tông & tốc độ bạn chỉnh
               </p>
             </div>
@@ -186,15 +187,15 @@ export const AudioWaveform: React.FC<AudioWaveformProps> = ({
         <div
           ref={containerRef}
           onClick={handleSeekClick}
-          className={`relative h-28 rounded-xl bg-slate-950/80 border border-slate-800/80 p-2 cursor-pointer transition-all ${
-            hasAudio ? 'hover:border-slate-700' : 'opacity-40 pointer-events-none'
+          className={`relative h-28 rounded-xl waveform-canvas-box border p-2 cursor-pointer transition-all ${
+            hasAudio ? 'hover:border-slate-400 dark:hover:border-slate-700' : 'opacity-40 pointer-events-none'
           }`}
           title={hasAudio ? 'Nhấp để tua đến vị trí bất kỳ' : 'Chưa có âm thanh'}
         >
           <canvas ref={canvasRef} className="w-full h-full block" />
 
           {!hasAudio && (
-            <div className="absolute inset-0 flex items-center justify-center text-xs text-slate-500 font-medium">
+            <div className="absolute inset-0 flex items-center justify-center text-xs text-slate-400 dark:text-slate-500 font-medium">
               Chưa có âm thanh. Nhấn "Tạo Giọng Nói Ngay" để phát sóng âm.
             </div>
           )}
@@ -204,9 +205,9 @@ export const AudioWaveform: React.FC<AudioWaveformProps> = ({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
           {/* Time tracker */}
           <div className="flex items-center gap-2 font-mono text-xs">
-            <span className="text-cyan-400 font-bold">{formatTime(currentTime)}</span>
-            <span className="text-slate-600">/</span>
-            <span className="text-slate-400">{formatTime(duration)}</span>
+            <span className="text-cyan-600 dark:text-cyan-400 font-bold">{formatTime(currentTime)}</span>
+            <span className="text-slate-400 dark:text-slate-600">/</span>
+            <span className="text-slate-600 dark:text-slate-400">{formatTime(duration)}</span>
           </div>
 
           {/* Action buttons */}
@@ -215,7 +216,7 @@ export const AudioWaveform: React.FC<AudioWaveformProps> = ({
             <button
               onClick={onReplay}
               disabled={!hasAudio}
-              className="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 hover:text-white border border-slate-700/80 disabled:opacity-30 transition-all active:scale-95"
+              className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800/80 dark:hover:bg-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700/80 disabled:opacity-30 transition-all active:scale-95"
               title="Phát lại từ đầu"
             >
               <RotateCcw className="w-4 h-4" />
@@ -241,8 +242,8 @@ export const AudioWaveform: React.FC<AudioWaveformProps> = ({
               disabled={!hasAudio}
               className={`p-2.5 rounded-xl border transition-all active:scale-95 disabled:opacity-30 ${
                 isLoop
-                  ? 'bg-pink-500/20 border-pink-500/40 text-pink-300'
-                  : 'bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white border-slate-700/80'
+                  ? 'bg-pink-100 dark:bg-pink-500/20 border-pink-300 dark:border-pink-500/40 text-pink-700 dark:text-pink-300'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700 dark:bg-slate-800/80 dark:hover:bg-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-700/80'
               }`}
               title={isLoop ? 'Tắt lặp lại' : 'Lặp lại liên tục'}
             >
@@ -251,21 +252,21 @@ export const AudioWaveform: React.FC<AudioWaveformProps> = ({
           </div>
 
           {/* Quick info badge */}
-          <div className="flex items-center gap-1.5 text-[10px] text-slate-400 font-mono flex-wrap justify-end">
-            <span className="px-2 py-0.5 rounded bg-slate-800/80 text-pink-300 border border-slate-700/80">
+          <div className="flex items-center gap-1.5 text-[10px] font-mono flex-wrap justify-end">
+            <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-pink-700 dark:text-pink-300 border border-slate-200 dark:border-slate-700/80">
               {settings.pitch >= 0 ? `+${settings.pitch}` : settings.pitch} st
             </span>
-            <span className="px-2 py-0.5 rounded bg-slate-800/80 text-cyan-300 border border-slate-700/80">
+            <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800/80 text-cyan-700 dark:text-cyan-300 border border-slate-200 dark:border-slate-700/80">
               {settings.speed}x
             </span>
             {settings.bgm.enabled && (
-              <span className="px-2 py-0.5 rounded bg-cyan-950/80 text-cyan-300 border border-cyan-700/60 flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse"></span>
+              <span className="px-2 py-0.5 rounded bg-cyan-100 dark:bg-cyan-950/80 text-cyan-800 dark:text-cyan-300 border border-cyan-200 dark:border-cyan-700/60 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse"></span>
                 BGM ({settings.bgm.volume}%)
               </span>
             )}
             {settings.normalization.enabled && (
-              <span className="px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-700/60">
+              <span className="px-2 py-0.5 rounded bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-700/60">
                 NORM {settings.normalization.targetPeakDb}dB
               </span>
             )}

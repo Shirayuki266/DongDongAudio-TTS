@@ -1,57 +1,76 @@
-# 🎙️ TikTok Baby Voice & Female TTS Studio
+# 🎙️ Đồng Đồng TTS Studio
 
-> **Studio chuyển văn bản thành Giọng Em Bé & Giọng Nữ TikTok triệu view — Không giới hạn ký tự, tích hợp bộ xử lý âm thanh chuyên nghiệp (Equalizer 5 băng tần, Lồng nhạc nền Auto-Ducking, Chuẩn hóa True-Peak -1.0 dBFS) xuất file WAV Studio Master cho CapCut.**
+> **Studio chuyển văn bản thành giọng nói AI đa nền tảng không giới hạn ký tự — Tích hợp tính năng Phân Tích Ngược Giọng từ File Audio (Reverse Voice Clone), chức năng Lưu Giọng Tùy Chỉnh đặt tên riêng, giao diện chọn giọng siêu gọn gàng, cùng trọn bộ giọng đọc Bing, Google Cloud, Chị Google, TikTok và bộ tinh chỉnh Tông giọng / Độ cao giọng chuyên nghiệp.**
 
-![TikTok TTS Studio](https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1200&q=80)
+![Đồng Đồng TTS Studio](https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?auto=format&fit=crop&w=1200&q=80)
 
 ---
 
 ## 🌟 Tính Năng Nổi Bật (Key Features)
 
-### 1. 🎭 Bộ Sưu Tập Giọng Đọc TikTok Đa Dạng
-- **👶 Giọng Em Bé TikTok (Trending Baby)**:
-  - **Em Bé TikTok Cute**: Giọng bé gái 3-4 tuổi ngọt ngào, nũng nịu viral triệu view.
-  - **Bé Trai Tinh Nghịch**: Năng động, lém lỉnh, đầy năng lượng.
-  - **Bé Kể Chuyện Cổ Tích**: Êm dịu, ngọt lịm, ấm áp cho truyện thiếu nhi.
-  - **Bé Gái Nũng Nịu**: Tan chảy trái tim, xin xỏ đáng yêu.
-  - **MC Nhí Thông Thái**: Giọng bé 6 tuổi dõng dạc, rõ ràng, hoạt ngôn.
-  - **Sóc Chuột Chipmunk**: Tông cao hài hước, biến hóa vui nhộn cho video troll.
-- **👩‍🦰 Giọng Nữ TikTok Hot Trend**:
-  - **Nữ TikTok Ngọt Ngào**: Trẻ trung, tươi vui cho video unboxing, review mỹ phẩm.
-  - **Chị Google Huyền Thoại**: Giọng đọc quốc dân huyền thoại, tròn vành rõ chữ, hài hước.
-  - **Nữ Review Phim / Kịch Bản**: Truyền cảm, kịch tính, lôi cuốn cho tóm tắt phim.
-  - **Cô Gái Gen Z Năng Động**: Nhịp nói nhanh, dí dỏm, bắt trend phong cách Gen Z.
-  - **Nữ MC Dẫn Chương Trình**: Chuẩn mực, thanh lịch, lưu loát cho video kiến thức.
-  - **Nữ Êm Dịu / Thư Giãn**: Thì thầm nhẹ nhàng, êm dịu chữa lành cho podcast & ru ngủ.
+### 1. 🔍 Phân Tích Ngược & Trích Xuất Giọng Từ Audio (Reverse Voice Cloning)
+- **Nhận diện file âm thanh đa định dạng**: Kéo thả hoặc tải lên bất kỳ file âm thanh nào (`.mp3`, `.wav`, `.m4a`, `.aac`, `.ogg`, `.webm` — ví dụ: trích xuất âm thanh từ video TikTok bạn thích).
+- **Hỗ trợ Ghi âm trực tiếp bằng Micro**: Thu âm giọng nói 3-5 giây để AI phân tích tông giọng thực tế của bạn.
+- **Thuật toán quét phổ âm học nâng cao (DSP Engine)**:
+  - **Tần số cơ bản F0 (Fundamental Pitch)**: Đo đạc cao độ chính xác bằng thuật toán tự tương quan *Autocorrelation*, tự động quy đổi sang bán cung Semitones (`-12st` đến `+12st`).
+  - **Nhịp điệu nói (Speaking Cadence / Tempo)**: Phân tích đường bao năng lượng RMS để tính tốc độ nói tự nhiên (`0.8x` đến `1.6x`).
+  - **Độ sáng Formant & Vòm họng**: Đo tỷ lệ tần số cao/thấp để xác định tính chất giọng (em bé vòm họng cao, nữ thanh mảnh, nam trầm).
+  - **Độ tương đồng & Đề xuất giọng**: Tự động tìm kiếm trong kho giọng đọc mẫu để chọn ra chất giọng nền khớp nhất (Confidence 90-99%).
+- **Hành động 1 chạm**:
+  - **"Áp Dụng Thử"**: Đưa toàn bộ cấu hình tông giọng, tốc độ vào studio ngay lập tức.
+  - **"Lưu & Sử Dụng Ngay"**: Đặt tên và lưu lại thành loại giọng riêng của bạn trong tab *"⭐ Giọng đã lưu"*.
 
 ---
 
-### 2. 🎛️ Bộ Xử Lý Âm Thanh Nâng Cao (Audio Studio Suite)
-- **Equalizer 5 Băng Tần (Parametric EQ)**:
-  - 5 dải tần số riêng biệt: `60Hz` (Sub-bass), `250Hz` (Low-mid), `1kHz` (Mid câu từ), `4kHz` (Presence sáng em bé), `12kHz` (Air bén tiếng).
-  - Tích hợp biểu đồ đường cong đáp tuyến tần số trực quan thời gian thực.
-  - Preset EQ chuẩn: *Em Bé Sáng Rõ, Kể Chuyện Ấm Áp, TikTok Viral Boost, Lo-Fi Radio, Cân Bằng Flat*.
-- **Giọng Mộc Chuẩn Phòng Thu (Dry Voice)**:
-  - Hoàn toàn triệt tiêu hiện tượng dội âm, vang vọng (No Reverb / No Echo).
-  - Giọng phát ra trực tiếp, sắc nét, trong trẻo, dễ dàng ghép nền trong mọi phần mềm dựng.
-- **Lồng Nhạc Nền Tích Hợp (BGM) & Tự Động Hạ Âm (Auto-Ducking)**:
-  - Kho nhạc nền bản quyền miễn phí tích hợp sẵn: *Em Bé Vui Chơi, Hộp Nhạc Ru Ngủ, Vlog Tươi Vui, Piano Cổ Tích, Hoạt Hình Nhí Nhố*.
-  - Hỗ trợ tải lên file nhạc riêng (.mp3, .wav) từ thiết bị.
-  - Tự động hạ âm lượng nhạc nền khi giọng nói cất lên và mượt mà nâng lên khi hết câu.
-- **Chuẩn Hóa Âm Lượng & Mastering (True-Peak Normalization)**:
-  - Cân bằng mức âm lượng chuẩn phát hành quốc tế **-1.0 dBFS**, chống vỡ tiếng và rè loa khi đăng tải lên TikTok, Reels, YouTube Shorts.
-  - Bộ nén động học (Studio Compressor) và bộ khử âm xì chói tai (De-Esser 7.2kHz).
+### 2. 🎛️ Giao Diện Chọn Giọng Đọc Thu Gọn (Compact Voice Selector)
+- **Tối ưu không gian hiển thị**: Thu gọn hơn 50% chiều cao so với trước đây, không còn chiếm quá nhiều diện tích màn hình.
+- **Thanh danh mục cuộn mượt**:
+  - **🌟 Tất cả**: Xem nhanh toàn bộ giọng đọc.
+  - **⭐ Giọng đã lưu**: Quản lý và kích hoạt các loại giọng do bạn tự tạo và lưu lại.
+  - **🎵 TikTok & Bé**: Giọng em bé hot trend, bé gái cute, sóc chuột, nữ review.
+  - **🎙️ Bing**: Toàn bộ dàn giọng Microsoft Bing (Hoài My, Nam Minh, Andrew, Ava, Brian...).
+  - **☁️ Google Cloud**: Giọng chuẩn Wavenet & Neural2 (Nữ 1-3, Nam 1-3).
+  - **📢 Chị Google**: Giọng đọc quốc dân huyền thoại.
+  - **🌐 Trình duyệt**: Giọng Web Speech API nội bộ thiết bị.
+- **Thanh trạng thái giọng đang chọn**: Hiển thị gọn gàng icon, tên, nhà cung cấp kèm nút gọi nhanh *"Phân tích Audio"* và *"Lưu giọng"*.
+- **Tùy biến AI Prompting gấp gọn**: Dễ dàng mở ra khi cần nhập prompt chỉ đạo biểu cảm cho Gemini AI.
 
 ---
 
-### 3. ⚡ Động Cơ Kép (Dual AI TTS Engine)
-- **Gemini 3.8 Flash Lite TTS**: Giọng đọc cảm xúc biểu cảm sâu, ngắt nghỉ chân thực theo ngữ cảnh tiếng Việt.
-- **Unlimited Fast HD**: Động cơ dự phòng không giới hạn số lần tạo, tốc độ phản hồi siêu tốc dưới 200ms.
-- **Cơ chế Cooldown & Tự Động Chuyển Đổi (Zero Downtime)**: Tự động phát hiện giới hạn quota và chuyển sang chế độ Không Giới Hạn mượt mà, không gián đoạn trải nghiệm người dùng.
+### 3. 🌓 Chế Độ Sáng / Tối (Light & Dark Theme Switcher)
+- **Tùy biến phong cách hiển thị**: Nút chuyển đổi nhanh **Giao diện Sáng (Light Mode)** và **Giao diện Tối (Dark Mode)** ngay trên thanh điều hướng.
+- **Tự động lưu trạng thái**: Lưu lại lựa chọn chế độ sáng/tối vào bộ nhớ trình duyệt, tự động áp dụng trong các lần sử dụng tiếp theo.
+- **Biểu tượng ứng dụng đặc trưng**: Cập nhật biểu tượng ứng dụng Đồng Đồng cô bé đeo tai nghe cute làm Avatar và Favicon trang web.
 
 ---
 
-## 🚀 Hướng Dẫn Cài Đặt & Chạy Cục Bộ (Getting Started)
+### 4. 💾 Chức Năng Lưu Giọng Tùy Chỉnh (Custom Saved Voices)
+- **Đặt tên tùy ý**: Đặt tên bất kỳ theo mục đích sử dụng (Ví dụ: *"Giọng Review Phim Kịch Tính"*, *"Bé Bống 3 Tuổi Hài Hước"*, *"Nữ Đọc Truyện Đêm Khuya"*...).
+- **Lưu trọn vẹn thông số**: Ghi nhớ đồng thời giọng gốc, Tông giọng (Pitch st), Tốc độ (Speed), Bộ lọc Formant, Bass cut, Treble crisp và Volume boost.
+- **Lưu trữ vĩnh viễn (LocalStorage)**: Giữ nguyên vẹn danh sách cấu hình của bạn ngay cả khi tải lại trình duyệt.
+
+---
+
+### 4. 🎚️ Bộ Tinh Chỉnh Âm Thanh & Giọng Mộc (Dry Voice)
+- **Tông giọng / Độ cao giọng (Pitch / Key)**: *(Tông giọng và Độ cao giọng là một)* — Điều chỉnh độ cao bổng hoặc trầm ấm từ `-12st` đến `+12st`.
+- **Tốc độ đọc (Speed / Tempo)**: Tùy chỉnh nhịp điệu từ `0.5x` đến `2.2x`.
+- **Bộ lọc âm thanh mộc**:
+  - `Formant Boost`: Cộng hưởng vòm họng trẻ em tự nhiên.
+  - `Bass Cut`: Cắt dải trầm ù rền.
+  - `Treble Crisp`: Tăng độ bén và sáng rõ từng chữ.
+  - `Volume Boost`: Khuếch đại âm lượng lên đến 180%.
+  - **100% Giọng Mộc (No Reverb / No Echo)**: Không dội âm, âm thanh sạch sẽ để lồng video CapCut.
+
+---
+
+### 5. 📊 3 Ô Thẻ Thống Kê Kịch Bản Đẹp Mắt
+- **Ô Ký tự (Live Counter)**: Đếm ký tự thời gian thực.
+- **Ô Số từ (Word Count)**: Thống kê số từ chuẩn xác.
+- **Ô Thời gian đọc (Estimated Duration)**: Tự động tính toán thời lượng phát thanh dựa trên tốc độ giọng đã chọn.
+
+---
+
+## 🚀 Hướng Dẫn Cài Đặt & Khởi Chạy (Getting Started)
 
 ### Yêu cầu môi trường
 - **Node.js**: Phiên bản 18+ trở lên.
@@ -63,18 +82,18 @@ npm install
 ```
 
 ### 2. Thiết lập biến môi trường
-Tạo file `.env` tại thư mục gốc (hoặc sao chép từ `.env.example`):
+Tạo file `.env` tại thư mục gốc:
 ```env
 PORT=3000
 GEMINI_API_KEY=your_gemini_api_key_here
 ```
-> *Lưu ý: Nếu không cung cấp `GEMINI_API_KEY`, ứng dụng sẽ tự động kích hoạt Động cơ Fast HD không giới hạn.*
+> *Lưu ý: Nếu không cung cấp API Key, hệ thống tự động chạy động cơ Fast HD Không Giới Hạn.*
 
 ### 3. Khởi động môi trường phát triển (Dev Server)
 ```bash
 npm run dev
 ```
-Truy cập trình duyệt tại: `http://localhost:3000`
+Truy cập tại: `http://localhost:3000`
 
 ### 4. Xây dựng bản phát hành Production
 ```bash
@@ -87,44 +106,33 @@ npm start
 ## 📁 Cấu Trúc Dự Án (Project Structure)
 
 ```text
-├── server.ts                    # Backend Express + Vite middleware, API TTS Proxy
+├── server.ts                             # Backend Express, API TTS Proxy & Quota Cooldown
 ├── src/
-│   ├── main.tsx                 # Điểm khởi chạy React SPA
-│   ├── App.tsx                  # Giao diện chính, bộ phát âm thanh & lưu trữ lịch sử
-│   ├── index.css                # Cấu hình Tailwind CSS & Styling
+│   ├── main.tsx                          # Entry point React Vite
+│   ├── App.tsx                           # Giao diện chính Đồng Đồng TTS Studio
+│   ├── index.css                         # Cấu hình Tailwind CSS & hiệu ứng
 │   ├── components/
-│   │   ├── VoiceSelector.tsx    # Bộ chọn danh mục giọng (Em bé, Giọng Nữ TikTok, Chibi)
-│   │   ├── TextInputArea.tsx    # Vùng nhập văn bản, đếm ký tự & kịch bản mẫu
-│   │   ├── AudioControls.tsx    # Điều khiển Tông giọng (Pitch), Tốc độ (Speed), Volume
-│   │   ├── AdvancedAudioSuite.tsx # Equalizer 5 băng tần, BGM Auto-Ducking, Normalization
-│   │   ├── AudioPlayer.tsx      # Thanh phát thanh sóng âm trực quan (Waveform)
-│   │   ├── HistoryShelf.tsx     # Kệ lịch sử các bản thu đã tạo, nghe lại & tải nhanh
-│   │   ├── ExportModal.tsx      # Cửa sổ xuất file WAV Master 48kHz / 44.1kHz
-│   │   └── TipsModal.tsx        # Hướng dẫn mẹo chèn file vào CapCut / TikTok
+│   │   ├── Header.tsx                    # Thanh điều hướng thương hiệu Đồng Đồng TTS Studio
+│   │   ├── VoiceSelector.tsx             # Giao diện chọn giọng thu gọn & nút phân tích audio
+│   │   ├── AudioReverseAnalysisModal.tsx # Cửa sổ nhận file audio & phân tích ngược trích xuất giọng
+│   │   ├── SaveVoiceModal.tsx            # Cửa sổ đặt tên & lưu loại giọng tùy chỉnh
+│   │   ├── TextEditor.tsx                # Vùng soạn thảo với 3 ô thẻ thống kê phát sáng
+│   │   ├── AudioControls.tsx             # Điều khiển Tông giọng / Độ cao, Tốc độ, Bộ lọc
+│   │   ├── AudioWaveform.tsx             # Sóng âm thanh trực quan & bộ phát nhạc
+│   │   ├── HistoryShelf.tsx              # Kệ lịch sử các bản thu đã tạo
+│   │   ├── ExportModal.tsx               # Cửa sổ xuất file WAV Studio Master
+│   │   └── TikTokTipsModal.tsx           # Hướng dẫn mẹo chèn file vào CapCut / TikTok
 │   ├── types/
-│   │   └── tts.ts               # Định nghĩa TypeScript Types cho Audio DSP & Voice Presets
+│   │   └── tts.ts                        # Định nghĩa TypeScript Types
 │   └── utils/
-│       ├── audioDsp.ts          # Bộ xử lý Web Audio API thời gian thực & Offline Rendering
-│       ├── bgmSynthesizer.ts    # Bộ tổng hợp nhạc nền & xử lý file nhạc tùy chỉnh
-│       ├── presets.ts           # Cấu hình danh sách các giọng nói mẫu
-│       └── sampleTexts.ts       # Kho kịch bản mẫu chuẩn TikTok
-├── metadata.json                # Thông tin cấu hình ứng dụng
-├── package.json                 # Danh sách thư viện phụ thuộc
-└── README.md                    # Tài liệu hướng dẫn sử dụng
+│       ├── voiceAnalyzer.ts              # Thuật toán Autocorrelation & phân tích ngược F0/Tempo
+│       ├── audioDsp.ts                   # Bộ xử lý Web Audio API & kết xuất WAV
+│       ├── presets.ts                    # Danh sách giọng mẫu chuẩn
+│       └── sampleTexts.ts                # Kho kịch bản mẫu
+├── metadata.json                         # Thông tin cấu hình ứng dụng
+├── package.json                          # Danh sách thư viện phụ thuộc
+└── README.md                             # Tài liệu hướng dẫn sử dụng Đồng Đồng TTS Studio
 ```
-
----
-
-## 🎬 Mẹo Lồng Tiếng Vào CapCut / TikTok Đạt Triệu View
-
-1. **Chọn Tông Giọng Phù Hợp**:
-   - Video unboxing / review đồ ăn: Chọn **Em Bé TikTok Cute** hoặc **Nữ TikTok Ngọt Ngào**.
-   - Video tóm tắt phim / kể chuyện: Chọn **Nữ Review Phim** hoặc **Chị Google Huyền Thoại**.
-   - Video hài hước troll: Chọn **Sóc Chuột Chipmunk**.
-2. **Khai Thác Auto-Ducking**:
-   - Bật tính năng lồng nhạc nền (BGM) ngay trong studio để có bản thu hoàn thiện liền mạch, không cần tự tay hạ volume nhạc trong CapCut.
-3. **Xuất File Chuẩn 48kHz**:
-   - Chọn định dạng xuất **WAV 48,000 Hz Studio Master** để giữ trọn vẹn dải tần số cao và độ bén của giọng đọc khi tải lên mạng xã hội.
 
 ---
 
